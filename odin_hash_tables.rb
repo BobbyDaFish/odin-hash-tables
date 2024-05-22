@@ -72,9 +72,12 @@ class HashMap
     names = []
     buckets.each do |arr|
       next if arr.nil?
-      return names << arr[0] if arr[2].nil?
 
-      # need to get nested [0] values
+      i = 0
+      until arr.flatten[i].nil?
+        names << arr.flatten[i]
+        i += 2
+      end
     end
     names
   end
@@ -84,7 +87,11 @@ class HashMap
     buckets.each do |arr|
       next if arr.nil?
 
-      data << arr[1]
+      i = 1
+      until arr.flatten[i].nil?
+        data << arr.flatten[i]
+        i += 2
+      end
     end
     data
   end
@@ -94,10 +101,12 @@ class HashMap
     buckets.each do |arr|
       next if arr.nil?
 
-      data << arr
+      i = 0
+      until arr[i].nil?
+        data << arr.flatten[i..i+1]
+        i += 2
+      end
     end
-    return [] if data.nil?
-
     data
   end
 
@@ -143,4 +152,4 @@ p map.buckets
 p map.length
 p map.keys
 p map.values
-p map.entries.length
+p map.entries
