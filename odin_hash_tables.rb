@@ -102,8 +102,8 @@ class HashMap
       next if arr.nil?
 
       i = 0
-      until arr[i].nil?
-        data << arr.flatten[i..i+1]
+      until arr.flatten[i].nil?
+        data << arr.flatten[i..i + 1]
         i += 2
       end
     end
@@ -131,8 +131,7 @@ class HashMap
   def collision(data, key, value)
     return data[2] = [key, value] if data[2].nil?
 
-    data[2] = collision(data[2], key, value)
-    data
+    collision(data[2], key, value)
   end
 end
 
@@ -140,13 +139,17 @@ map = HashMap.new
 map.set('Carlos', 'first')
 map.set('Carla', 'second')
 p map.get('Thomas')
-p map.has?('Carlos')
-p map.has?('Thomas')
+p map.has?('Paul')
+p map.has?('Tim')
 map.set('Thomas', 'third')
 map.set('Tina', 'fourth')
 map.set('Peter', 'fifth')
 map.set('Sara', 'sixth')
+map.set('Tim', 'seventh')
 p map.buckets
+map.set('John', 'eigth')
+map.set('Lily', 'ninth')
+map.set('Paul', 'tenth')
 map.remove('Thomas')
 p map.buckets
 p map.length
