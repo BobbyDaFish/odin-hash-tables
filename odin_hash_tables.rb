@@ -45,21 +45,52 @@ class HashMap
   def has?(key)
     buckets.each do |arr|
       next if arr.nil?
-      return true if arr[0] == key
+
+      i = 0
+      return true if arr[i] == key || arr.flatten[i + 2] == key
+
+      until arr.flatten[i].nil?
+        return true if arr.flatten[i] == key
+
+        i += 2
+      end
     end
     false
   end
 
   def remove(key)
-    index = hash(key)
-    return nil if buckets[index].nil?
+    return nil unless has?(key)
 
-    buckets[index] = nil
+    buckets.each_with_index do |k, i|
+      next if k.nil?
+
+      if k == key
+        buckets[index] = nil
+        buckets[index + 1] = nil
+        return key
+      elsif k.flatten.any?(key)
+        return deleter(key, k)
+      else
+        next
+      end
+    end
+  end
+
+  def deleter(key, data)
+    if data[0] == key
+      data[0] = nil
+      data[1] = nil
+      key
+    else
+      deleter(key, data[2])
+    end
   end
 
   def length
     i = 0
-    buckets.each { |arr| i += 1 unless arr.nil? }
+    data = values
+
+    data.each { i += 1 }
     i
   end
 
@@ -138,9 +169,7 @@ end
 map = HashMap.new
 map.set('Carlos', 'first')
 map.set('Carla', 'second')
-p map.get('Thomas')
-p map.has?('Paul')
-p map.has?('Tim')
+
 map.set('Thomas', 'third')
 map.set('Tina', 'fourth')
 map.set('Peter', 'fifth')
@@ -150,9 +179,12 @@ p map.buckets
 map.set('John', 'eigth')
 map.set('Lily', 'ninth')
 map.set('Paul', 'tenth')
-map.remove('Thomas')
+p map.remove('Thomas')
+p map.has?('Paul')
+p map.has?('Thomas')
 p map.buckets
 p map.length
+p map.remove('Paul')
 p map.keys
 p map.values
 p map.entries
